@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    <string name="movie_key">aee7e1019e2ec4e5227009711db09161</string>
+    <string name="movie_key">Your_key_here</string>
     <string name="error">Network Error</string>
     <string name="name">Name</string>
     <string name="example">Sri Krishna was born in northern India in approximately 3,228 BCE. The Puranas consider Sri Krishna’s life to mark the passing of the Dvapara age in to the Kali Yuga (current age)
