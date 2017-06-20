@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -48,7 +49,9 @@ import java.util.ArrayList;
 public class DetailActivity extends AppCompatActivity {
 ImageView image,Trailer;
      ArrayList<Reviews> trailerArrayList;
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+     ArrayList<Reviews> reviewsArrayList;
     TextView mdate,mplot;
     ObjectAnimator animator;
 int identify;
@@ -60,26 +63,43 @@ int identify;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        preferences=getSharedPreferences("movies",MODE_PRIVATE);
+        editor=preferences.edit();
         final Bundle bundle=getIntent().getExtras();
         String date=bundle.getString("date");
         String plot=bundle.getString("plot");
         final String imageString=bundle.getString("ImageString");
      final   String id=bundle.getString("id");
         final String rating =bundle.getString("rating");
-        make_request(id);
+        view=(RecyclerView) findViewById(R.id.view);
+
+        if(savedInstanceState!=null){
+            reviewsArrayList=savedInstanceState.getParcelableArrayList("list");
+            manager=new LinearLayoutManager(DetailActivity.this);
+view.setAdapter(new ReviewAdapter(DetailActivity.this,reviewsArrayList));
+            view.setLayoutManager(manager);
+            manager.scrollToPosition(savedInstanceState.getInt("index"));
+        }
+        else{
+            reviewsArrayList=new ArrayList<>();
+            make_request(id);
+        }
+
         trailerArrayList=new ArrayList<>();
-        String original=bundle.getString("original");
+        final String original=bundle.getString("original");
         String backdrop=bundle.getString("backdrop");
         Toolbar toolbar=(Toolbar) findViewById(R.id.beer);
         final AppBarLayout layout=(AppBarLayout) findViewById(R.id.appl);
         button=(FloatingActionButton) findViewById(R.id.fav);
+        if(preferences.getString(original,"movies")!="movies"){
+            button.setImageResource(R.drawable.ic_delete_black_24dp);
+        }
         animator=ObjectAnimator.ofFloat(button,View.ROTATION_Y,360);
 
         //toolbar.setTitle("here toolbar");
         CollapsingToolbarLayout bar=(CollapsingToolbarLayout) findViewById(R.id.collap);
         bar.setTitle(original);
         bar.setExpandedTitleColor(getResources().getColor(R.color.white));
-view=(RecyclerView) findViewById(R.id.view);
         manager=new LinearLayoutManager(this);
 Trailer=(ImageView) findViewById(R.id.playtrailer);
         image=(ImageView) findViewById(R.id.thumbnail_detail);
@@ -98,37 +118,52 @@ Trailer=(ImageView) findViewById(R.id.playtrailer);
             @Override
             public void onClick(View v) {
 
-                Picasso.with(DetailActivity.this).load(movieApi.THUMBNAIL+imageString).into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                         mArray = stream.toByteArray();
-                    }
+if(preferences.getString(original,"movies")=="movies"){
+    Picasso.with(DetailActivity.this).load(movieApi.THUMBNAIL+imageString).into(new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            mArray = stream.toByteArray();
+        }
 
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
 
-                    }
+        }
 
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                    }
-                });
-                ContentValues values=new ContentValues();
-                values.put(MovieContract.movietable.MOVIE_IMAGE,mArray);
-                values.put(MovieContract.movietable.MOVIE_RATING,rating);
-                Uri uri=getContentResolver().insert(MovieContract.movietable.CONTENT_URI,values);
-                if(uri!=null){
-                    Toast.makeText(DetailActivity.this,"Suceesfully added" +uri.toString(),Toast.LENGTH_SHORT).show();
-                }
+        }
+    });
+    ContentValues values=new ContentValues();
+    values.put(MovieContract.movietable.MOVIE_IMAGE,mArray);
+    values.put(MovieContract.movietable.MOVIE_RATING,rating);
+    Uri uri=getContentResolver().insert(MovieContract.movietable.CONTENT_URI,values);
+    if(uri!=null){
+        editor.putString(original,uri.getLastPathSegment());
+        editor.apply();
+        Toast.makeText(DetailActivity.this,"Added to Favourites" +uri.getLastPathSegment(),Toast.LENGTH_SHORT).show();
+    }
 
-                //identify=0;
-                button.setImageResource(R.drawable.ic_done_white_24dp);
-          //      Toast.makeText(DetailActivity.this,"trailer",Toast.LENGTH_SHORT).show();
-                animator.start();
-                //button.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+    //identify=0;
+    button.setImageResource(R.drawable.ic_delete_black_24dp);
+    //      Toast.makeText(DetailActivity.this,"trailer",Toast.LENGTH_SHORT).show();
+    animator.start();
+
+}
+else {
+    int row=getContentResolver().delete(MovieContract.movietable.CONTENT_URI.buildUpon().appendPath(preferences.getString(original,"movies")).build(),null,null);
+    editor.remove(original);
+    editor.apply();
+    button.setImageResource(R.drawable.ic_star_rate_black_18dp);
+    animator.start();
+    Toast.makeText(DetailActivity.this,"Deleted from Favourites",Toast.LENGTH_SHORT).show();
+}
+
+
+                                //button.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             }
         });
         //mtitle=(TextView) findViewById(R.id.name_deatil);
@@ -159,7 +194,7 @@ Trailer=(ImageView) findViewById(R.id.playtrailer);
 
     public void make_request(String id){
 
-        final ArrayList<Reviews> reviewsArrayList=new ArrayList<>();
+
        final RequestQueue queue= Volley.newRequestQueue(getApplicationContext());
 
         JsonObjectRequest mrequest=new JsonObjectRequest(Request.Method.GET, movieApi.MOVIE_REVIEWS_1+id+movieApi.MOVIE_REVIEW_2+getString(R.string.movie_key), null, new Response.Listener<JSONObject>() {
@@ -276,4 +311,10 @@ builder.create();
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("list",reviewsArrayList);
+        outState.putInt("index",manager.findFirstVisibleItemPosition());
+    }
 }

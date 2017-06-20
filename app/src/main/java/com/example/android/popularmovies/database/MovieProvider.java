@@ -84,7 +84,18 @@ private static final UriMatcher mMatcher=makeMatcher();
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db=helper.getWritableDatabase();
+        int match=mMatcher.match(uri);
+        int row = 0;
+        if(match==MOVIES_WITH_ID){
+            String id=uri.getLastPathSegment();
+            String mselection="_id=?";
+            String mselectionagr[]=new String[]{id};
+            row=db.delete(MovieContract.movietable.TABLE_NAME,mselection,mselectionagr);
+        }
+        getContext().getContentResolver().notifyChange(uri,null);
+
+        return row;
     }
 
     @Override

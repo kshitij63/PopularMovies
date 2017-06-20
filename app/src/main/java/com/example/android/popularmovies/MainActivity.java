@@ -57,11 +57,20 @@ MovieAdapter adapter;
 errortext=(TextView) findViewById(R.id.error);
         toolbar=(Toolbar) findViewById(R.id.tool_main);
         setSupportActionBar(toolbar);
-        movie_list=new ArrayList<>();
         manager=new GridLayoutManager(this,2);
-        bar=(ProgressBar) findViewById(R.id.pb);
-        bar.setVisibility(View.VISIBLE);
-        MovieRequest(movieApi.MOVIE_TOP_RATED);
+if(savedInstanceState!=null){
+    movie_list=savedInstanceState.getParcelableArrayList("list");
+    view.setAdapter(new MovieAdapter(MainActivity.this,movie_list));
+    view.setLayoutManager(manager);
+    manager.scrollToPosition(savedInstanceState.getInt("index"));
+}
+else{
+    movie_list=new ArrayList<>();
+    bar=(ProgressBar) findViewById(R.id.pb);
+    bar.setVisibility(View.VISIBLE);
+    MovieRequest(movieApi.MOVIE_TOP_RATED);
+
+}
         //Log.e("sink",movieApi.key);
      if(isOnline()){
          errortext.setVisibility(View.VISIBLE);
@@ -152,5 +161,12 @@ bar.setVisibility(View.INVISIBLE);
             startActivity(intent);
         }
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("list",movie_list);
+        outState.putInt("index",manager.findFirstVisibleItemPosition());
     }
 }
