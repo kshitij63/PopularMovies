@@ -11,4 +11,9 @@
         android:title="popular">
 
     </item>
+    <item
+        android:id="@+id/fav"
+        android:title="Favourite">
+
+    </item>
 </menu>

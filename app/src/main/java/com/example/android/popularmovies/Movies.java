@@ -1,5 +1,6 @@
 package com.example.android.popularmovies;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -18,6 +19,11 @@ public class Movies implements Parcelable {
     String plot;
     String original_title;
     String id;
+    Bitmap bitmap;
+    Movies(String rating, Bitmap bitmap){
+        this.rating=rating;
+        this.bitmap=bitmap;
+    }
 
     Movies(String title, String rating, String posterpath,String date,String plot,String original_title,String Backdrop_path,String id){
         this.Backdrop_path=Backdrop_path;
@@ -56,6 +62,10 @@ public class Movies implements Parcelable {
 
     public String getPlot() {
         return plot;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
     @Override

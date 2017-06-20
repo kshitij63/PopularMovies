@@ -2,6 +2,8 @@ package com.example.android.popularmovies;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.android.popularmovies.APIUtils.movieApi;
+import com.example.android.popularmovies.database.MoviedbHelper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -48,6 +51,7 @@ MovieAdapter adapter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         view=(RecyclerView) findViewById(R.id.movie_recycle);
         queue= Volley.newRequestQueue(this);
 errortext=(TextView) findViewById(R.id.error);
@@ -142,6 +146,10 @@ bar.setVisibility(View.INVISIBLE);
         }
         else if(selected_item==R.id.popular){
             MovieRequest(movieApi.MOVIE_POPULAR);
+        }
+        else if(selected_item==R.id.fav){
+            Intent intent=new Intent(MainActivity.this,FavouriteActivity.class);
+            startActivity(intent);
         }
         return true;
     }

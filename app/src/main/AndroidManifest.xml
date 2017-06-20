@@ -3,7 +3,7 @@
     package="com.example.android.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".DetailActivity" />
+
+        <provider
+            android:name=".database.MovieProvider"
+            android:authorities="com.example.android.popularmovies"
+            android:exported="false"></provider>
+
+        <activity android:name=".FavouriteActivity"></activity>
     </application>
 
 </manifest>

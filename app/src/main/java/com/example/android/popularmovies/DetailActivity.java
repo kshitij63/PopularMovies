@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.animation.ObjectAnimator;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -33,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.android.popularmovies.APIUtils.movieApi;
+import com.example.android.popularmovies.database.MovieContract;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -40,6 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
@@ -49,6 +52,7 @@ ImageView image,Trailer;
     TextView mdate,mplot;
     ObjectAnimator animator;
 int identify;
+    byte[] mArray;
     FloatingActionButton button;
     RecyclerView view;
     LinearLayoutManager manager;
@@ -59,8 +63,9 @@ int identify;
         final Bundle bundle=getIntent().getExtras();
         String date=bundle.getString("date");
         String plot=bundle.getString("plot");
-        String imageString=bundle.getString("ImageString");
+        final String imageString=bundle.getString("ImageString");
      final   String id=bundle.getString("id");
+        final String rating =bundle.getString("rating");
         make_request(id);
         trailerArrayList=new ArrayList<>();
         String original=bundle.getString("original");
@@ -92,8 +97,36 @@ Trailer=(ImageView) findViewById(R.id.playtrailer);
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                identify=0;
-                Toast.makeText(DetailActivity.this,"trailer",Toast.LENGTH_SHORT).show();
+
+                Picasso.with(DetailActivity.this).load(movieApi.THUMBNAIL+imageString).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                         mArray = stream.toByteArray();
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
+                ContentValues values=new ContentValues();
+                values.put(MovieContract.movietable.MOVIE_IMAGE,mArray);
+                values.put(MovieContract.movietable.MOVIE_RATING,rating);
+                Uri uri=getContentResolver().insert(MovieContract.movietable.CONTENT_URI,values);
+                if(uri!=null){
+                    Toast.makeText(DetailActivity.this,"Suceesfully added" +uri.toString(),Toast.LENGTH_SHORT).show();
+                }
+
+                //identify=0;
+                button.setImageResource(R.drawable.ic_done_white_24dp);
+          //      Toast.makeText(DetailActivity.this,"trailer",Toast.LENGTH_SHORT).show();
                 animator.start();
                 //button.setBackgroundColor(getResources().getColor(R.color.colorAccent));
             }
