@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.APIUtils.movieApi;
@@ -36,13 +37,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
 
     public class MovieHolder extends RecyclerView.ViewHolder{
 ImageView Thumbnail_image;
+        RatingBar bar;
         TextView title;
         TextView rating;
         public MovieHolder(View itemView) {
             super(itemView);
             Thumbnail_image=(ImageView) itemView.findViewById(R.id.thumbnail);
-            title=(TextView) itemView.findViewById(R.id.name);
-            rating=(TextView) itemView.findViewById(R.id.rating);
+            bar=(RatingBar) itemView.findViewById(R.id.rating_star);
+            //title=(TextView) itemView.findViewById(R.id.name);
+            //rating=(TextView) itemView.findViewById(R.id.rating);
         }
     }
 
@@ -65,15 +68,17 @@ ImageView Thumbnail_image;
 Movies current_movie=movie_list.get(position);
         String poster_path=current_movie.getPosterpath();
         Picasso.with(context).load(movieApi.THUMBNAIL +poster_path).into(holder.Thumbnail_image);
-
-        holder.title.setText(current_movie.getTitle());
-        holder.rating.setText(current_movie.getRating());
+        Float rate=(Float.valueOf(current_movie.getRating()))/2;
+holder.bar.setRating(rate);
+//        holder.title.setText(current_movie.getTitle());
+  //      holder.rating.setText(current_movie.getRating());
         holder.Thumbnail_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context,DetailActivity.class);
                 intent.putExtra("original",movie_list.get(position).getOriginal_title());
                 intent.putExtra("date",movie_list.get(position).getDate());
+                intent.putExtra("backdrop",movie_list.get(position).getBackdrop_path());
                 intent.putExtra("plot",movie_list.get(position).getPlot());
                 intent.putExtra("ImageString",movie_list.get(position).getPosterpath());
                 //intent.putParcelableArrayListExtra("movie_list",movie_list);

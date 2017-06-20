@@ -14,10 +14,12 @@ public class Movies implements Parcelable {
     String rating;
     String posterpath;
     String date;
+    String Backdrop_path;
     String plot;
     String original_title;
 
-    Movies(String title, String rating, String posterpath,String date,String plot,String original_title){
+    Movies(String title, String rating, String posterpath,String date,String plot,String original_title,String Backdrop_path){
+        this.Backdrop_path=Backdrop_path;
         this.title=title;
         this.posterpath=posterpath;
         this.rating=rating;
@@ -53,6 +55,10 @@ public class Movies implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public String getBackdrop_path() {
+        return Backdrop_path;
     }
 
     @Override

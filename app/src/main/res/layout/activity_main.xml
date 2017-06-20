@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.popularmovies.MainActivity">
 
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/movie_recycle"
-        android:padding="16dp">
+        android:id="@+id/movie_recycle">
 
     </android.support.v7.widget.RecyclerView>
     <TextView
