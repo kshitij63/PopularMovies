@@ -81,6 +81,7 @@ holder.bar.setRating(rate);
                 intent.putExtra("backdrop",movie_list.get(position).getBackdrop_path());
                 intent.putExtra("plot",movie_list.get(position).getPlot());
                 intent.putExtra("ImageString",movie_list.get(position).getPosterpath());
+                intent.putExtra("id",movie_list.get(position).getId());
                 //intent.putParcelableArrayListExtra("movie_list",movie_list);
                 context.startActivity(intent);
             }

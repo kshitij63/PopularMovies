@@ -8,9 +8,11 @@
     tools:context="com.example.android.popularmovies.MainActivity">
 
 
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
         android:id="@+id/movie_recycle">
 
     </android.support.v7.widget.RecyclerView>
@@ -29,6 +31,13 @@
         android:layout_gravity="center"
         android:visibility="invisible"
         android:id="@+id/pb"/>
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:id="@+id/tool_main">
+
+    </android.support.v7.widget.Toolbar>
 
 
 

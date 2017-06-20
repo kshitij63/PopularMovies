@@ -49,7 +49,7 @@
         android:src="@drawable/ic_star_rate_black_18dp"
         app:layout_anchorGravity="bottom|right"
         android:layout_margin="16dp"
-        android:id="@+id/play_trailer"
+        android:id="@+id/fav"
         />
 
 
@@ -154,6 +154,12 @@
         android:background="@color/colorPrimary">
 
     </View>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view">
+    </android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>

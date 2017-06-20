@@ -15,7 +15,9 @@ public class movieApi {
 
     public static final String MOVIE_TOP_RATED= "http://api.themoviedb.org/3/movie/top_rated?api_key=";
     public static final String MOVIE_REVIEWS_1= "http://api.themoviedb.org/3/movie/";
-            public static final String MOVIE_REVIEW_2="reviews?api_key=";
+            public static final String MOVIE_REVIEW_2="/reviews?api_key=";
+    public static final String MOVIE_TRAILER_2="/trailers?api_key=";
+
 
     public static final String THUMBNAIL="http://image.tmdb.org/t/p/w185/";
 

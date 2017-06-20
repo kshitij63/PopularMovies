@@ -17,8 +17,9 @@ public class Movies implements Parcelable {
     String Backdrop_path;
     String plot;
     String original_title;
+    String id;
 
-    Movies(String title, String rating, String posterpath,String date,String plot,String original_title,String Backdrop_path){
+    Movies(String title, String rating, String posterpath,String date,String plot,String original_title,String Backdrop_path,String id){
         this.Backdrop_path=Backdrop_path;
         this.title=title;
         this.posterpath=posterpath;
@@ -26,6 +27,7 @@ public class Movies implements Parcelable {
         this.date=date;
         this.original_title=title;
         this.plot=plot;
+        this.id=id;
     }
 
     public String getPosterpath() {
@@ -38,6 +40,10 @@ public class Movies implements Parcelable {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getDate() {
