@@ -53,6 +53,7 @@ public class FavouriteActivity extends AppCompatActivity {
 
         @Override
         protected Cursor doInBackground(Void... params) {
+
             Cursor cr=getContentResolver().query(MovieContract.movietable.CONTENT_URI,null,null,null,null);
 
 
