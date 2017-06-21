@@ -38,7 +38,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 RequestQueue queue;
     TextView errortext;
 MovieAdapter adapter;
@@ -47,45 +47,48 @@ MovieAdapter adapter;
     ArrayList<Movies> movie_list;
     RecyclerView view;
     ProgressBar bar;
+
+    private static MainActivity mInstance;
+    public static synchronized MainActivity getInstance() {
+        return mInstance;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        view=(RecyclerView) findViewById(R.id.movie_recycle);
-        queue= Volley.newRequestQueue(this);
-errortext=(TextView) findViewById(R.id.error);
-        toolbar=(Toolbar) findViewById(R.id.tool_main);
-        setSupportActionBar(toolbar);
-        manager=new GridLayoutManager(this,2);
-if(savedInstanceState!=null){
-    movie_list=savedInstanceState.getParcelableArrayList("list");
-    view.setAdapter(new MovieAdapter(MainActivity.this,movie_list));
-    view.setLayoutManager(manager);
-    manager.scrollToPosition(savedInstanceState.getInt("index"));
+        mInstance = this;
+if(!checkConnection()){
+    Toast.makeText(this,"No Connection",Toast.LENGTH_SHORT).show();
 }
-else{
-    movie_list=new ArrayList<>();
-    bar=(ProgressBar) findViewById(R.id.pb);
-    bar.setVisibility(View.VISIBLE);
-    MovieRequest(movieApi.MOVIE_TOP_RATED);
+   view=(RecyclerView) findViewById(R.id.movie_recycle);
+    queue= Volley.newRequestQueue(this);
+    errortext=(TextView) findViewById(R.id.error);
+    toolbar=(Toolbar) findViewById(R.id.tool_main);
+    setSupportActionBar(toolbar);
+    manager=new GridLayoutManager(this,2);
+    if(savedInstanceState!=null){
+        movie_list=savedInstanceState.getParcelableArrayList("list");
+        view.setAdapter(new MovieAdapter(MainActivity.this,movie_list));
+        view.setLayoutManager(manager);
+        manager.scrollToPosition(savedInstanceState.getInt("index"));
+    }
+    else{
+        movie_list=new ArrayList<>();
+        bar=(ProgressBar) findViewById(R.id.pb);
+        bar.setVisibility(View.VISIBLE);
+        MovieRequest(movieApi.MOVIE_TOP_RATED);
 
-}
-        //Log.e("sink",movieApi.key);
-     if(isOnline()){
-         errortext.setVisibility(View.VISIBLE);
-     }
+    }
+    //Log.e("sink",movieApi.key);
+
+
 
 
     }
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+
 
     public void MovieRequest(String type_path){
+        if(bar!=null)
         bar.setVisibility(View.VISIBLE);
         movie_list.clear();
         queue.start();
@@ -131,6 +134,7 @@ else{
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if(bar!=null)
 bar.setVisibility(View.INVISIBLE);
                 errortext.setVisibility(View.INVISIBLE);
             }
@@ -150,11 +154,23 @@ bar.setVisibility(View.INVISIBLE);
     public boolean onOptionsItemSelected(MenuItem item) {
         int selected_item=item.getItemId();
         if(selected_item==R.id.top_rated){
-            MovieRequest(movieApi.MOVIE_TOP_RATED);
+            if(!checkConnection())
+                Toast.makeText(MainActivity.this,"No Internet Connection!",Toast.LENGTH_SHORT).show();
+
+            else {
+                MovieRequest(movieApi.MOVIE_TOP_RATED);
+            }
 
         }
         else if(selected_item==R.id.popular){
-            MovieRequest(movieApi.MOVIE_POPULAR);
+            if(!checkConnection())
+                Toast.makeText(MainActivity.this,"No Internet Connection!",Toast.LENGTH_SHORT).show();
+
+            else {
+                MovieRequest(movieApi.MOVIE_POPULAR);
+
+            }
+
         }
         else if(selected_item==R.id.fav){
             Intent intent=new Intent(MainActivity.this,FavouriteActivity.class);
@@ -166,7 +182,22 @@ bar.setVisibility(View.INVISIBLE);
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("list",movie_list);
-        outState.putInt("index",manager.findFirstVisibleItemPosition());
+
+            outState.putParcelableArrayList("list", movie_list);
+            outState.putInt("index", manager.findFirstVisibleItemPosition());
+
+    }
+    public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {
+        ConnectivityReceiver.connectivityReceiverListener = listener;
+    }
+    private boolean checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+     //   showSnack(isConnected);
+        return isConnected;
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+Toast.makeText(MainActivity.this,"No connection!!",Toast.LENGTH_SHORT).show();
     }
 }
