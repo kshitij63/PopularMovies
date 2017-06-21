@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    <string name="movie_key">YOUR_KEY_HERE</string>
+    <string name="movie_key">aee7e1019e2ec4e5227009711db09161</string>
     <string name="error">Network Error</string>
     <string name="name">Name</string>
     </resources>

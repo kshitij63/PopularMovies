@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.database.MovieContract;
+import com.example.android.popularmovies.database.MoviedbHelper;
 
 import java.util.ArrayList;
 
@@ -31,6 +33,8 @@ public class FavouriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
+        MoviedbHelper helper=new MoviedbHelper(this);
+        SQLiteDatabase db=helper.getReadableDatabase();
         view=(TextView) findViewById(R.id.nothing_to_show);
         recyclerView=(RecyclerView) findViewById(R.id.movie_recycle);
         manager=new GridLayoutManager(this,2);

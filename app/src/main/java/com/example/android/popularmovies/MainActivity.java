@@ -1,5 +1,6 @@
 package com.example.android.popularmovies;
 
+import android.animation.ObjectAnimator;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,8 @@ MovieAdapter adapter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MoviedbHelper helper=new MoviedbHelper(this);
+        SQLiteDatabase db=helper.getReadableDatabase();
         bar=(ProgressBar) findViewById(R.id.pb);
         mInstance = this;
 if(!checkConnection()){
