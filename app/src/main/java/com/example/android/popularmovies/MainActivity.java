@@ -56,6 +56,7 @@ MovieAdapter adapter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bar=(ProgressBar) findViewById(R.id.pb);
         mInstance = this;
 if(!checkConnection()){
     Toast.makeText(this,"No Connection",Toast.LENGTH_SHORT).show();
