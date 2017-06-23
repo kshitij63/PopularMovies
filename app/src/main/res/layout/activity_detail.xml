@@ -70,6 +70,7 @@
                     android:layout_width="120dp"
                     android:layout_height="150dp"
                     android:fitsSystemWindows="true"
+                    android:transitionName="namert"
                     android:id="@+id/thumbnail_detail" />
                 <LinearLayout
                     android:layout_width="match_parent"

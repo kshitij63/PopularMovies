@@ -1,8 +1,13 @@
 package com.example.android.popularmovies;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Movie;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,7 +70,7 @@ ImageView Thumbnail_image;
     }
 
     @Override
-    public void onBindViewHolder(MovieHolder holder, final int position) {
+    public void onBindViewHolder(final MovieHolder holder, final int position) {
 Movies current_movie=movie_list.get(position);
         String poster_path=current_movie.getPosterpath();
         if(poster_path==null){
@@ -82,9 +87,11 @@ holder.bar.setRating(rate);
   //      holder.rating.setText(current_movie.getRating());
 if(movie_list.get(position).getDate()!=null) {
     holder.Thumbnail_image.setOnClickListener(new View.OnClickListener() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, DetailActivity.class);
+            Bundle bundle= ActivityOptions.makeSceneTransitionAnimation((Activity) context,holder.Thumbnail_image,holder.Thumbnail_image.getTransitionName()).toBundle();
             intent.putExtra("rating", movie_list.get(position).getRating());
             intent.putExtra("original", movie_list.get(position).getOriginal_title());
             intent.putExtra("date", movie_list.get(position).getDate());
@@ -93,7 +100,7 @@ if(movie_list.get(position).getDate()!=null) {
             intent.putExtra("ImageString", movie_list.get(position).getPosterpath());
             intent.putExtra("id", movie_list.get(position).getId());
             //intent.putParcelableArrayListExtra("movie_list",movie_list);
-            context.startActivity(intent);
+            context.startActivity(intent,bundle);
         }
     });
 }
